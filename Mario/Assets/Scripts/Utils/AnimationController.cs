@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public abstract class AnimationController  MonoBehaviour
+public abstract class AnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
      
-    const string IDLE = Idle; 
+    const string IDLE = "Idle"; 
 
     [SerializeField] private string currentState; 
 
@@ -22,6 +22,11 @@ public abstract class AnimationController  MonoBehaviour
     public Animator GetAnimator()
     {
         return animator;
+    }
+
+    public void PlayIdleState()
+    {
+        ChangeAnimationState(IDLE);
     }
 
 }

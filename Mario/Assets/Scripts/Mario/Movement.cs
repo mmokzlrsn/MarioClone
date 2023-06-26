@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -5,7 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     public float movementSpeed = 5f;
     public float jumpForce = 5f;
-    public Transform groundCheck;
+    public Transform LeftFoot;
+    public Transform RightFoot;
     public float groundCheckRadius = 1f;
     public LayerMask groundLayer;
 
@@ -13,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool isJumping = false;
     [SerializeField] private bool isGrounded = false;
+
+    [SerializeField] PlayerAnimationController _animator;
 
     private void Awake()
     {
@@ -22,10 +26,13 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         // Check if the player is grounded
-        GroundCheck();
+        GroundCheck(); 
 
         if (!isGrounded)
+        {
+            _animator.PlayJumpState();
             return;
+        }
 
         // Handle horizontal movement
         float moveDirection = Input.GetAxis("Horizontal");
@@ -34,22 +41,32 @@ public class PlayerMovement : MonoBehaviour
 
         rb.velocity = new Vector2(moveDirection * movementSpeed, rb.velocity.y);
 
+        if (moveDirection > 0)
+            _animator.PlayRunState();
+        else if (moveDirection < 0) _animator.PlayRunState();
+        
+        else if(moveDirection == 0) _animator.PlayIdleState();
+
         // Handle jumping
         Jump();
     }
 
     private void GroundCheck()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        isGrounded = Physics2D.OverlapArea(LeftFoot.position, RightFoot.position, groundLayer);
+         
+    }
 
-        
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(LeftFoot.position,RightFoot.position);
     }
 
     private void Jump()
     {
         if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+        { 
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse); 
         }
     }
 
