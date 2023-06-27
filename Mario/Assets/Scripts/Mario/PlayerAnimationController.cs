@@ -6,6 +6,8 @@ public class PlayerAnimationController : AnimationController
 {
     const string RUN = "Run";
     const string JUMP = "Jump";
+    const string DEATH = "Death";
+    
     public void PlayRunState()
     {
         ChangeAnimationState(RUN);
@@ -15,4 +17,11 @@ public class PlayerAnimationController : AnimationController
     {
         ChangeAnimationState(JUMP);
     }
+
+    public void PlayDeathState()
+    {
+        ChangeAnimationState(DEATH);
+    }
+
+
 }
